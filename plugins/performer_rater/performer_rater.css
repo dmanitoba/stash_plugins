@@ -1,0 +1,771 @@
+/* Performer Quick Rater Styles - Ultra Compact Version */
+
+#performer-rate-btn {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+#performer-rate-btn:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+#performer-rating-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.rating-modal {
+    background-color: #2d2d2d;
+    border-radius: 8px;
+    padding: 12px;
+    max-width: 900px;
+    width: 95%;
+    height: 90vh;
+    overflow-y: auto;
+    color: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.rating-header {
+    /* Switch to relative so we can absolutely center the help text */
+    position: relative;
+    display: flex;
+    justify-content: space-between; /* Left title + right controls stay anchored */
+    align-items: center;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 8px;
+    height: 26px;
+}
+
+.rating-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 15px;
+    line-height: 20px;
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.rating-header h3 .gender-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.help-text {
+    /* Absolutely centered regardless of left/right content width */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0; /* Remove flex margin shifting */
+    padding: 0 12px; /* Small horizontal padding for readability */
+    color: #aaa;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap; /* Prevent wrapping which could cause vertical jitter */
+    max-width: 60%; /* Safety so extreme narrow widths don't overflow */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none; /* Don’t block clicks on overlay area */
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+}
+
+#performer-counter {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 20px;
+}
+
+.submit-btn {
+    background-color: #28a745;
+    border: none;
+    color: white;
+    padding: 3px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 18px;
+    height: 24px;
+    margin: 0;
+}
+
+.submit-btn:hover {
+    background-color: #218838;
+}
+
+.separator {
+    width: 100%;
+    height: 1px;
+    background-color: #444;
+    margin: 8px 0;
+    flex-shrink: 0;
+}
+
+.help-box {
+    background: #444;
+    border: 1px solid #666;
+    color: #ccc;
+    padding: 3px 8px;
+    border-radius: 3px;
+    cursor: help;
+    font-size: 12px;
+    line-height: 18px;
+    position: relative;
+}
+
+.help-box:hover {
+    background: #555;
+    color: #fff;
+}
+
+.help-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    line-height: 14px;
+    white-space: nowrap;
+    z-index: 10000;
+    margin-bottom: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.help-box:hover .help-tooltip {
+    opacity: 1;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 16px;
+}
+
+.close-btn:hover {
+    color: #ff6b6b;
+}
+
+.rating-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-height: 0; /* Allow content to shrink */
+}
+
+.image-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    width: 100%;
+    overflow: hidden;
+    /* Override any external constraints */
+    max-width: none !important;
+}
+
+/* Specific override if calc() constraint exists elsewhere */
+.rating-content .image-container {
+    flex: 0 0 calc(100% - 150px) !important;
+    max-width: calc(100% - 150px) !important;
+}
+
+.controls-container {
+    flex-shrink: 0; /* Prevent controls from shrinking */
+    width: 100%;
+    max-width: 900px;
+    margin-top: auto; /* Push controls to bottom */
+    padding: 8px 0;
+    background-color: #2d2d2d; /* Ensure background consistency */
+}
+
+/* Ultra-compact 3-column layout */
+.three-column-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    align-items: start;
+    padding: 0;
+    margin: 0;
+}
+
+.column-1,
+.column-2,
+.column-3 {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Column 1: Rating and URL */
+.rating-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.rating-section label {
+    color: #ccc;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0;
+    line-height: 20px;
+    display: inline-block;
+    min-width: 45px;
+}
+
+.rating-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+}
+
+#rating-input {
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 13px;
+    line-height: 20px;
+    text-align: center;
+    width: 50px;
+    height: 22px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#rating-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.rating-arrows {
+    display: flex;
+    gap: 2px;
+}
+
+.arrow-btn {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    font-size: 12px;
+    line-height: 20px;
+    border: 1px solid #555;
+    background: #333;
+    color: #fff;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+.url-input-section {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+    margin: 0;
+}
+
+.url-input-section label {
+    color: #ccc;
+    font-size: 13px;
+    margin: 0;
+    line-height: 20px;
+    min-width: 45px;
+    font-weight: bold;
+}
+
+#image-url-input {
+    flex: 1;
+    padding: 2px 6px;
+    border: 1px solid #444;
+    border-radius: 2px;
+    background-color: #1a1a1a;
+    color: white;
+    font-size: 12px;
+    line-height: 20px;
+    height: 22px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Remove search button styles since it's now just text */
+
+/* Column 2: Fake Tits and Measurements */
+.fake-tits-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fake-tits-section label {
+    color: #ccc;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0;
+    line-height: 20px;
+}
+
+.fake-tits-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+}
+
+.button-group {
+    display: flex;
+    gap: 2px;
+}
+
+.toggle-btn {
+    background-color: #444;
+    border: 1px solid #666;
+    color: #ccc;
+    padding: 2px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 20px;
+    height: 22px;
+    margin: 0;
+    min-width: 32px;
+    text-align: center;
+}
+
+.toggle-btn:hover {
+    background-color: #555;
+    border-color: #777;
+    color: #fff;
+}
+
+.toggle-btn.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.measurements-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.measurements-section label {
+    color: #ccc;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0;
+    line-height: 20px;
+}
+
+.measurements-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+}
+
+#measurements-input {
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 20px;
+    text-align: center;
+    width: 100%;
+    height: 22px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#measurements-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.measurements-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+.size-buttons,
+.cup-buttons {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.size-btn,
+.cup-btn {
+    background-color: #444;
+    border: 1px solid #666;
+    color: #ccc;
+    padding: 1px 4px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 10px;
+    line-height: 16px;
+    height: 18px;
+    margin: 0;
+    min-width: 18px;
+    text-align: center;
+}
+
+.size-btn:hover,
+.cup-btn:hover {
+    background-color: #555;
+    border-color: #777;
+    color: #fff;
+}
+
+.size-btn.active,
+.cup-btn.active {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.size-btn.disabled,
+.cup-btn.disabled {
+    background-color: #333;
+    border-color: #555;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Column 3: Tags */
+.tags-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tags-section label {
+    color: #ccc;
+    font-weight: bold;
+    font-size: 13px;
+    margin: 0;
+    line-height: 20px;
+}
+
+.tags-input-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+}
+
+#tags-input {
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 20px;
+    width: 100%;
+    height: 22px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#tags-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.preset-tags {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 2px;
+}
+
+.preset-tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    justify-content: flex-start;
+}
+
+.preset-tag-btn {
+    background-color: #444;
+    border: 1px solid #666;
+    color: #ccc;
+    padding: 2px 6px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 16px;
+    height: 20px;
+    margin: 0;
+}
+
+.preset-tag-btn:hover {
+    background-color: #555;
+    border-color: #777;
+    color: #fff;
+}
+
+.preset-tag-btn.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.rating-modal .active-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    min-height: 18px;
+    margin-top: 2px;
+}
+
+.rating-modal .tag-item {
+    background-color: #28a745;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 11px;
+    line-height: 16px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0;
+}
+
+.rating-modal .tag-remove {
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    line-height: 8px;
+    margin: 0;
+}
+
+.rating-modal .tag-remove:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Remove old action row styles and replace with simpler image lookup */
+.image-lookup-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.image-lookup-btn {
+    padding: 3px 10px;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 11px;
+    line-height: 18px;
+    height: 24px;
+    margin: 0;
+    background-color: #17a2b8;
+    color: white;
+}
+
+.image-lookup-btn:hover {
+    background-color: #138496;
+}
+
+/* Image - fit the whole image in view filling available space */
+#performer-image {
+    width: 100%;
+    height: 98%;
+    object-fit: contain;
+    border-radius: 4px;
+    flex: 1;
+    margin: auto 0;
+}
+
+
+/* Action buttons styling */
+.action-buttons {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 6px;
+}
+
+.action-buttons button {
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #f0f0f0;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 50px;
+    height: 20px;
+    line-height: 16px;
+    margin: 0;
+}
+
+.action-buttons button:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+}
+
+.action-buttons button.save-btn {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+}
+
+.action-buttons button.save-btn:hover {
+    background: linear-gradient(135deg, #1e7e34, #155724);
+}
+
+.action-buttons button.close-btn {
+    background: linear-gradient(135deg, #6c757d, #495057);
+}
+
+.action-buttons button.close-btn:hover {
+    background: linear-gradient(135deg, #495057, #343a40);
+}
+
+/* Rating Help */
+.rating-help {
+    margin-top: 8px;
+    text-align: center;
+    color: #aaa;
+    font-size: 10px;
+    line-height: 14px;
+    border-top: 1px solid #444;
+    padding-top: 6px;
+}
+
+.rating-help kbd {
+    background-color: #444;
+    color: #fff;
+    padding: 1px 3px;
+    border-radius: 2px;
+    font-size: 9px;
+    line-height: 12px;
+}
+
+/* Highlight current performer being rated */
+.rating-current {
+    outline: 3px solid #007bff !important;
+    outline-offset: 2px;
+    position: relative;
+}
+
+.rating-current::after {
+    content: "RATING...";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: #007bff;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 2px;
+    font-size: 8px;
+    font-weight: bold;
+    z-index: 10;
+    line-height: 12px;
+}
+
+/* Remove all default margins and padding */
+.rating-modal * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Override any default form element spacing */
+.rating-modal input,
+.rating-modal button,
+.rating-modal label,
+.rating-modal div {
+    margin: 0;
+    vertical-align: top;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .rating-modal {
+        width: 95%;
+        height: 85vh;
+        padding: 8px;
+    }
+    
+    .three-column-layout {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    #performer-image {
+        max-height: 40vh;
+        min-height: 150px;
+    }
+}

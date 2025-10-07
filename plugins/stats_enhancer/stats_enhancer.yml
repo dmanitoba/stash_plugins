@@ -1,0 +1,9 @@
+name: Stats Enhancer
+description: Adds country, age distribution, and timeline charts with interactive filters.
+version: 1.1.0
+url: https://github.com/dmanitoba/stash-plugins
+ui:
+  javascript:
+    - stats_enhancer.js
+  css:
+    - stats_enhancer.css

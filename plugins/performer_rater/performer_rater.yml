@@ -1,0 +1,9 @@
+name: Performer Quick Rater
+description: Keyboard-driven overlay to rate performers, tag, set measurements, and update images rapidly.
+version: 1.1.0
+url: https://github.com/dmanitoba/stash-plugins
+ui:
+  javascript:
+    - performer_rater.js
+  css:
+    - performer_rater.css
