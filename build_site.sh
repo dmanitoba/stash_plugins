@@ -52,20 +52,20 @@ buildPlugin()
     dep=$(grep "^# requires:" "$f" | cut -c 12- | sed -e 's/\r//')
 
     # write to spec index
-    echo "  - id: $plugin_id
-    name: $name
-    metadata:
-      description: $description
-    version: $version
-    date: $updated
-    path: $plugin_id.zip
-    sha256: $(sha256sum "$zipfile" | cut -d' ' -f1)" >> "$outdir"/index.yml
+    echo "- id: $plugin_id
+  name: $name
+  metadata:
+    description: $description
+  version: $version
+  date: $updated
+  path: $plugin_id.zip
+  sha256: $(sha256sum "$zipfile" | cut -d' ' -f1)" >> "$outdir"/index.yml
 
     # handle dependencies
     if [ ! -z "$dep" ]; then
-        echo "    requires:" >> "$outdir"/index.yml
+        echo "  requires:" >> "$outdir"/index.yml
         for d in ${dep//,/ }; do
-            echo "      - $d" >> "$outdir"/index.yml
+            echo "    - $d" >> "$outdir"/index.yml
         done
     fi
 

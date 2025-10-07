@@ -1,0 +1,22 @@
+name: "Stash Plugins Repository"
+metadata:
+  version: 1
+plugins:
+- id: performer_rater
+  name: Performer Quick Rater
+  metadata:
+    description: Keyboard-driven overlay to rate performers, tag, set measurements, and update images rapidly.
+  version: 1.1.0-2f9b91f
+  date: 2025-10-07 05:49:09
+  path: performer_rater.zip
+  sha256: f2bd8b8b82c46b818fcd281dcb0dd2798497fb9e95c30989928a00ede4abd87d
+
+- id: stats_enhancer
+  name: Stats Enhancer
+  metadata:
+    description: Adds country, age distribution, and timeline charts with interactive filters.
+  version: 1.1.0-160edfa
+  date: 2025-10-07 04:50:52
+  path: stats_enhancer.zip
+  sha256: 377dc07951deda6eb71bd4e3e2066702bdf0981d5f528d709e0914ad3854aded
+

@@ -1,24 +1,47 @@
-# Template for creating Stash plugins source index
 
-This template allows you to create a new repository with a few clicks with preconfigured GitHub action to publish your plugins source index. 
-_This assumes you already know how to create plugins for Stash. If you don't, first read [this](https://docs.stashapp.cc/in-app-manual/plugins/#creating-plugins)._
+# Stash Plugins Repository
 
-## How to use it?
+A collection of plugins for [Stash](https://stashapp.cc/) - an organizer for your porn collection.
 
-1. Click **Use this template** > **Create a new repository**. 
-1. Choose a repository name and click **Create repository**.
-1. Open **Settings** and head to **Pages**.
-1. Under Build and deployment select the Source as GitHub Actions.
+## Available Plugins
 
-Now add your plugins to [plugins](/plugins) directory and they will be automatically published to the source index.
+### Performer Rater
+**Version**: 1.1.0  
+**Description**: Keyboard-driven overlay to rate performers, tag, set measurements, and update images rapidly.
 
-Source index URL: [`https://<your-username>.github.io/<repository-name>/main/index.yml`](https://<your-username>.github.io/<repository-name>/main/index.yml)
+#### Features
+- **Rapid Performer Rating**: Navigate through performers with arrow keys, rate with +/- buttons or direct input, automatically saves ratings/measurements/tags with a lightning-fast workflow
+- **Smart Image Management**: Paste image URLs directly, auto-saves images to Stash database, integrated Google Images search
+- **Comprehensive Data Entry**: Quick-select buttons for measurements (34C, etc), fake tits toggle, preset tag buttons for common tags like "OnlyFans"/"Pornhub", automatic tag creation
 
-## Share your plugins
+### Stats Enhancer
+**Version**: 1.1.0  
+**Description**: Adds country, age distribution, and timeline charts with interactive filters.
 
-- [Create a new topic](https://discourse.stashapp.cc/t/-/33) for your plugin on the community forum.
-- [Add your source index to the list](https://discourse.stashapp.cc/t/-/122) on the Stash community forum.
+#### Features
+- **Interactive Country Statistics**: Click on any country bar to see a popup with the top performers from that country, sortable by scene count or rating, with flag emojis and themed colors
+- **Age Distribution Analysis**: Shows performer age distribution based on age at the date of production
+- **Scene Production Timeline**: Interactive monthly timeline visualization showing scene production volumes with clickable month bars that display scene counts and allow filtering by specific time periods
+
+## Installation
+
+1. Download the plugin zip files from the [releases](../../releases) or build them using the build script
+2. In Stash, go to Settings → Plugins
+3. Click "Add Plugin" and upload the zip file
+4. Enable the plugin and configure as needed
+
+## Building
+
+To build all plugins and generate the repository index:
+
+```bash
+./build_site.sh
+```
+
+This will create a `_site` directory with:
+- `index.yml` - Plugin repository index
+- `<plugin_name>.zip` - Individual plugin packages
 
 ## License
 
-The default license is set to [AGPL-3.0](/LICENCE). Before publishing any plugins you can change it.
+This project is licensed under [AGPL-3.0](LICENCE).
