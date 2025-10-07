@@ -75,6 +75,54 @@ class StatsEnhancer {
             'El Salvador': { code: 'SV', demonym: 'Salvadoran', colors: ['#0047AB', '#FFFFFF', '#0047AB'] },
             'Uruguay': { code: 'UY', demonym: 'Uruguayan', colors: ['#FFFFFF', '#0038A8', '#FFCC00'] },
             'Georgia': { code: 'GE', demonym: 'Georgian', colors: ['#FFFFFF', '#FF0000', '#FFFFFF'] },
+            'Ecuador': { code: 'EC', demonym: 'Ecuadorian', colors: ['#FFD100', '#0072CE', '#EF3340'] },
+            'India': { code: 'IN', demonym: 'Indian', colors: ['#FF9933', '#FFFFFF', '#138808'] },
+            'Panama': { code: 'PA', demonym: 'Panamanian', colors: ['#DA121A', '#FFFFFF', '#0033A0'] },
+            'Mongolia': { code: 'MN', demonym: 'Mongolian', colors: ['#C4272F', '#015197', '#C4272F'] },
+            'Syria': { code: 'SY', demonym: 'Syrian', colors: ['#CE1126', '#FFFFFF', '#007A3D'] },
+            'Morocco': { code: 'MA', demonym: 'Moroccan', colors: ['#C1272D', '#006233'] },
+            'Albania': { code: 'AL', demonym: 'Albanian', colors: ['#E41E20', '#000000'] },
+            'Iceland': { code: 'IS', demonym: 'Icelandic', colors: ['#02529C', '#FFFFFF', '#DC1E35'] },
+            'Lebanon': { code: 'LB', demonym: 'Lebanese', colors: ['#EE161F', '#FFFFFF', '#00A651'] },
+            'Kenya': { code: 'KE', demonym: 'Kenyan', colors: ['#000000', '#FFFFFF', '#006600'] },
+            'Kyrgyzstan': { code: 'KG', demonym: 'Kyrgyz', colors: ['#E8112D', '#FFEF00'] },
+            'Indonesia': { code: 'ID', demonym: 'Indonesian', colors: ['#FF0000', '#FFFFFF'] },
+            'Singapore': { code: 'SG', demonym: 'Singaporean', colors: ['#EF3340', '#FFFFFF'] },
+            'Bolivia': { code: 'BO', demonym: 'Bolivian', colors: ['#D52B1E', '#F9E300', '#007934'] },
+            'Virgin Islands': { code: 'VI', demonym: 'Virgin Islander', colors: ['#FFFFFF', '#0047AB', '#FFD100'] },
+            'Luxembourg': { code: 'LU', demonym: 'Luxembourgish', colors: ['#ED2939', '#FFFFFF', '#00A1DE'] },
+            'Sudan': { code: 'SD', demonym: 'Sudanese', colors: ['#D21034', '#FFFFFF', '#000000'] },
+            'Pakistan': { code: 'PK', demonym: 'Pakistani', colors: ['#01411C', '#FFFFFF', '#01411C'] },
+            'Korea, Republic of': { code: 'KR', demonym: 'Korean', colors: ['#FFFFFF', '#C60C30', '#003478'] },
+            'Belize': { code: 'BZ', demonym: 'Belizean', colors: ['#CE1126', '#003F87', '#FFFFFF'] },
+            'Haiti': { code: 'HT', demonym: 'Haitian', colors: ['#00209F', '#D21034'] },
+            'Hong Kong': { code: 'HK', demonym: 'Hong Konger', colors: ['#DE2910', '#FFFFFF'] },
+            'Micronesia': { code: 'FM', demonym: 'Micronesian', colors: ['#75B2DD', '#FFFFFF'] },
+            'Tajikistan': { code: 'TJ', demonym: 'Tajik', colors: ['#CC0000', '#FFFFFF', '#006600'] },
+            'Armenia': { code: 'AM', demonym: 'Armenian', colors: ['#D90012', '#0033A0', '#F2A800'] },
+            'Malta': { code: 'MT', demonym: 'Maltese', colors: ['#FFFFFF', '#CF142B'] },
+            'Iran (Islamic Republic of)': { code: 'IR', demonym: 'Iranian', colors: ['#239F40', '#FFFFFF', '#DA0000'] },
+            'Rwanda': { code: 'RW', demonym: 'Rwandan', colors: ['#00A1DE', '#FAD201', '#20603D'] },
+            'Togo': { code: 'TG', demonym: 'Togolese', colors: ['#006A4E', '#FFFFFF', '#D21034'] },
+            'Guatemala': { code: 'GT', demonym: 'Guatemalan', colors: ['#4997D0', '#FFFFFF', '#4997D0'] },
+            'Paraguay': { code: 'PY', demonym: 'Paraguayan', colors: ['#D52B1E', '#FFFFFF', '#0038A8'] },
+            'Maldives': { code: 'MV', demonym: 'Maldivian', colors: ['#D21034', '#007E3A', '#FFFFFF'] },
+            'Cyprus': { code: 'CY', demonym: 'Cypriot', colors: ['#FFFFFF', '#D57800'] },
+            'Jamaica': { code: 'JM', demonym: 'Jamaican', colors: ['#009B3A', '#FED100', '#000000'] },
+            'Bosnia and Herzegovina': { code: 'BA', demonym: 'Bosnian', colors: ['#002395', '#FECB00', '#FFFFFF'] },
+            'Yugoslavia': { code: 'YU', demonym: 'Yugoslav', colors: ['#0C4076', '#FFFFFF', '#DE0000'] },
+            'Bangladesh': { code: 'BD', demonym: 'Bangladeshi', colors: ['#006A4E', '#F42A41'] },
+            'Central African Republic': { code: 'CF', demonym: 'Central African', colors: ['#003082', '#FFFFFF', '#289728'] },
+            'Guam': { code: 'GU', demonym: 'Guamanian', colors: ['#EF3340', '#002868', '#FFFFFF'] },
+            'Uzbekistan': { code: 'UZ', demonym: 'Uzbek', colors: ['#0099B5', '#FFFFFF', '#1EB53A'] },
+            'Iraq': { code: 'IQ', demonym: 'Iraqi', colors: ['#CE1126', '#FFFFFF', '#007A3D'] },
+            'Saudi Arabia': { code: 'SA', demonym: 'Saudi', colors: ['#165B31', '#FFFFFF'] },
+            'Costa Rica': { code: 'CR', demonym: 'Costa Rican', colors: ['#002B7F', '#FFFFFF', '#CE1126'] },
+            'Honduras': { code: 'HN', demonym: 'Honduran', colors: ['#0073CF', '#FFFFFF', '#0073CF'] },
+            'Mauritius': { code: 'MU', demonym: 'Mauritian', colors: ['#EA2839', '#1A206D', '#FFD100'] },
+            'Slovakia (Slovak Republic)': { code: 'SK', demonym: 'Slovak', colors: ['#FFFFFF', '#0B4EA2', '#EE1C25'] },
+            'Afghanistan': { code: 'AF', demonym: 'Afghan', colors: ['#000000', '#D32011', '#007A3D'] },
+            'Algeria': { code: 'DZ', demonym: 'Algerian', colors: ['#006233', '#FFFFFF', '#D21034'] },
         };
         
         // Code to full name mapping for reverse lookup
@@ -286,6 +334,7 @@ class StatsEnhancer {
     async showCountryPerformers(countryRow) {
         const country = countryRow.getAttribute('data-country');
         const limit = parseInt(countryRow.getAttribute('data-limit'), 10) || 24;
+        const totalCount = parseInt(countryRow.getAttribute('data-total-count'), 10) || limit;
         const popup = countryRow.querySelector('.country-hover-popup');
         
         // Toggle visibility - but stay open if this is a sort mode change
@@ -423,10 +472,11 @@ class StatsEnhancer {
             const flagCode = (countryRow.dataset.flag || '').toUpperCase();
             const pluralNoun = (flagCode === 'US' || flagCode === 'RU') ? 'Whores' : 'Sluts';
             const modeNote = requestedSortMode === 'rating' ? ' ~ Top Rated' : ' ~ Most Scenes';
+            const countText = performers.length === totalCount ? `All ${performers.length}` : `Top ${performers.length}`;
             
             let html = `
                 <div class="popup-header">
-                    <span class="popup-header-title">${this.escapeHtml(demonym)} ${pluralNoun}${modeNote}</span>
+                    <span class="popup-header-title">${countText} ${this.escapeHtml(demonym)} ${pluralNoun}${modeNote}</span>
                     <div class="popup-header-buttons">
                         <button class="sort-scenes sort-btn${requestedSortMode === 'scenes' ? ' active' : ''}" title="Sort by scene count">Scenes</button>
                         <button class="sort-rating sort-btn${requestedSortMode === 'rating' ? ' active' : ''}" title="Sort by rating">Rating</button>
@@ -668,6 +718,7 @@ class StatsEnhancer {
                                 name
                                 country
                                 gender
+                                scene_count
                             }
                         }
                     }
@@ -687,8 +738,10 @@ class StatsEnhancer {
 
             const performers = allPerformers;
             
-            // Filter for female performers in JavaScript instead
-            const femalePerformers = performers.filter(p => p.gender === 'FEMALE');
+            // Filter for female performers (include all, even with 0 scenes for consistency)
+            const femalePerformers = performers.filter(p => 
+                p.gender === 'FEMALE' && this.getScenes(p) >= 0
+            );
             
             // Count performers by country
             const countryCounts = {};
@@ -1179,23 +1232,23 @@ class StatsEnhancer {
             
             // Determine how many top performers to show on hover based on country total
             let performerLimit;
-            if (count > 2000) performerLimit = 200;
+            if (count < 10) performerLimit = count; // Show all if less than 10
             else if (count > 1000) performerLimit = 100;
-            else if (count > 200) performerLimit = 52;
-            else if (count > 50) performerLimit = 24;
+            else if (count > 200) performerLimit = 50;
+            else if (count > 50) performerLimit = 20;
             else performerLimit = 10;
-            // Round up to nearest multiple of 4 so rows are full
-            performerLimit = Math.ceil(performerLimit / 4) * 4;
             
             html += `
-                <div class="country-row" data-country="${country}" data-country-display="${this.escapeHtml(displayName)}" data-demonym="${demonym ? this.escapeHtml(demonym) : ''}" data-flag="${flagCode}" data-limit="${performerLimit}">
+                <div class="country-row" data-country="${country}" data-country-display="${this.escapeHtml(displayName)}" data-demonym="${demonym ? this.escapeHtml(demonym) : ''}" data-flag="${flagCode}" data-limit="${performerLimit}" data-total-count="${count}">
                     <div class="country-flag country-flag-dynamic" title="${this.escapeHtml(displayName)}" style="background: ${barGradient};">
                         ${flagEmoji}
                     </div>
                     <div class="country-bar-container country-bar-container-dynamic">
                         <div class="country-bar country-bar-dynamic" style="width: ${percentage}%; background: ${barGradient};">
+                        </div>
+                        <div class="country-label-overlay">
                             <span class="country-name country-name-dynamic">${this.escapeHtml(displayName)}</span>
-                            <span class="country-count-inside">${count.toLocaleString()}</span>
+                            <span class="country-count-label">${count.toLocaleString()}</span>
                         </div>
                     </div>
                     <div class="country-hover-popup" data-sticky="false" style="display: none; width: 84vw; overflow-y: hidden;">
