@@ -16,9 +16,9 @@ class PerformerRater {
             // Row 1: Status/Action tags
             ['Cataloged', 'Get More'],
             // Row 2: Platform tags  
-            ['OnlyFans', 'Pornhub', 'RedGifs', 'JAV'],
+            ['OnlyFans', 'Pornhub', 'RedGifs', 'Chaturbate', 'MissAV'],
             // Row 3: Physical/Type tags
-            ['Big Natural Tits', 'Bimbo', 'Petite', 'Shemale', 'Slut', 'Whore']
+            ['Big Natural Tits', 'Bimbo', 'Petite', 'Shemale', 'Slut']
         ];
         
         this.init();
