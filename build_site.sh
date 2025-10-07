@@ -16,13 +16,8 @@ fi
 rm -rf "$outdir"
 mkdir -p "$outdir"
 
-# Create the index header
-cat > "$outdir/index.yml" << 'EOF'
-name: "Stash Plugins Repository"
-metadata:
-  version: 1
-plugins:
-EOF
+# Create empty index file (will be populated with array of packages)
+> "$outdir/index.yml"
 
 buildPlugin() 
 {
