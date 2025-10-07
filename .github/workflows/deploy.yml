@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'plugins/**'
+      - 'build_site.sh'
+      - '.github/workflows/deploy.yml'
     branches:
       - main
   workflow_dispatch:
