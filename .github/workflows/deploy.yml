@@ -2,14 +2,12 @@ name: Deploy repository to Github Pages
 
 on:
   push:
-      paths:
+    paths:
       - 'plugins/**'
-      branches:
+    branches:
       - main
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
@@ -17,22 +15,58 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: '0'
-    - run: |
-        chmod +x build_site.sh    
-        ./build_site.sh _site/${{ github.ref_name }}
-    - uses: actions/upload-pages-artifact@v3
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          path: main
+          ref: main
+          fetch-depth: 0
+      
+      - name: Debug directory structure
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Contents of current directory:"
+          ls -la
+          echo "Contents of main directory:"
+          ls -la main/
+          echo "Looking for plugins directory:"
+          find . -name "plugins" -type d
+          echo "Looking for .yml files:"
+          find . -name "*.yml"
+      
+      - name: Build site
+        run: |
+          cd main
+          chmod +x build_site.sh
+          ./build_site.sh ../_site/main
+      
+      - name: Debug build output
+        run: |
+          echo "Contents of _site directory:"
+          ls -la _site/
+          if [ -d "_site/main" ]; then
+            echo "Contents of _site/main directory:"
+            ls -la _site/main/
+            if [ -f "_site/main/index.yml" ]; then
+              echo "Contents of index.yml:"
+              cat _site/main/index.yml
+            else
+              echo "index.yml not found!"
+            fi
+          else
+            echo "_site/main directory not found!"
+          fi
+      
+      - uses: actions/upload-pages-artifact@v3
 
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}main/index.yml
-    runs-on: ubuntu-latest
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       - name: Deploy to GitHub Pages
