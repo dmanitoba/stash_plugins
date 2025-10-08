@@ -155,13 +155,27 @@ class StatsEnhancer {
         return code.replace(/./g, c => String.fromCodePoint(base + c.charCodeAt(0)));
     }
 
-    // Helper method to get country info by name or code
+    // Helper method to get country info by name or code - case insensitive
     getCountryInfo(countryKey) {
         if (!countryKey) return null;
+        
+        const normalized = countryKey.trim().toUpperCase();
+        
+        // Try exact match first (for full country names)
         if (this.countryCodes[countryKey]) return this.countryCodes[countryKey];
-        const upper = countryKey.toUpperCase();
-        const full = this.codeToName[upper];
-        if (full && this.countryCodes[full]) return this.countryCodes[full];
+        
+        // Try code lookup (2-letter codes)
+        if (this.codeToName[normalized]) {
+            const fullName = this.codeToName[normalized];
+            if (this.countryCodes[fullName]) return this.countryCodes[fullName];
+        }
+        
+        // Try case-insensitive full name match
+        const fullNameMatch = Object.keys(this.countryCodes).find(
+            name => name.toUpperCase() === normalized
+        );
+        if (fullNameMatch) return this.countryCodes[fullNameMatch];
+        
         return null;
     }
 
@@ -743,13 +757,14 @@ class StatsEnhancer {
                 p.gender === 'FEMALE' && this.getScenes(p) >= 0
             );
             
-            // Count performers by country
+            // Count performers by country - NORMALIZE TO UPPERCASE for consistent grouping
             const countryCounts = {};
             let unknownCount = 0;
             
             femalePerformers.forEach(performer => {
                 if (performer.country && performer.country.trim()) {
-                    const country = performer.country.trim();
+                    // Normalize to uppercase to group case variations (NO, no, No -> NO)
+                    const country = performer.country.trim().toUpperCase();
                     countryCounts[country] = (countryCounts[country] || 0) + 1;
                 } else {
                     unknownCount++;
