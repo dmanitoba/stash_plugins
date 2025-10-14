@@ -2,31 +2,71 @@
     margin-top: 1rem;
 }
 
-.stats-chart-title {
+#enhanced-stats-container .stats-chart-title {
     color: #fff;
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 1rem;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
 }
 
-.loading-spinner {
+#enhanced-stats-container .gender-icon-filters {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+#enhanced-stats-container .gender-icon {
+    cursor: pointer;
+    color: #555;
+    width: 1.1rem;
+    height: 1.1rem;
+    transition: all 0.2s ease;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+}
+
+#enhanced-stats-container .gender-icon:hover {
+    transform: scale(1.2);
+}
+
+#enhanced-stats-container .gender-icon.active[data-gender="MALE"] {
+    color: #4da6ff;
+}
+
+#enhanced-stats-container .gender-icon.active[data-gender="FEMALE"] {
+    color: #ff69b4;
+}
+
+#enhanced-stats-container .gender-icon.active[data-gender="TRANS"] {
+    color: #9b59b6;
+}
+
+#enhanced-stats-container .gender-icon:not(.active) {
+    opacity: 0.3;
+}
+
+#enhanced-stats-container .loading-spinner {
     color: #aaa;
     text-align: center;
     padding: 2rem;
     font-style: italic;
 }
 
-.country-row {
+#enhanced-stats-container .country-row {
     display: flex;
     align-items: center;
     margin-bottom: 2px;
     padding: 1px 4px;
     border-radius: 4px;
     background: rgba(255,255,255,0.05);
+    cursor: pointer;
 }
 
-.country-flag {
+#enhanced-stats-container .country-flag {
     width: 32px;
     height: 20px;
     margin-right: 12px;
@@ -40,7 +80,7 @@
     font-weight: bold;
 }
 
-.country-bar-container {
+#enhanced-stats-container .country-bar-container {
     flex: 1;
     height: 16px;
     background: rgba(255,255,255,0.1);
@@ -49,14 +89,14 @@
     position: relative;
 }
 
-.country-bar {
+#enhanced-stats-container .country-bar {
     height: 100%;
     border-radius: 10px;
     transition: width 0.8s ease-in-out;
     position: relative;
 }
 
-.country-name {
+#enhanced-stats-container .country-name {
     position: absolute;
     left: 8px;
     top: 50%;
@@ -68,7 +108,7 @@
     z-index: 2;
 }
 
-.country-count {
+#enhanced-stats-container .country-count {
     color: #fff;
     font-size: 14px;
     font-weight: bold;
@@ -76,7 +116,7 @@
     text-align: right;
 }
 
-.age-bar-container {
+#enhanced-stats-container .age-bar-container {
     display: flex;
     align-items: end;
     height: 300px;
@@ -85,7 +125,7 @@
     margin-top: 1rem;
 }
 
-.age-bar {
+#enhanced-stats-container .age-bar {
     flex: 1;
     background: linear-gradient(to top, #ff6b6b, #4ecdc4);
     min-height: 2px;
@@ -95,12 +135,12 @@
     cursor: pointer;
 }
 
-.age-bar:hover {
+#enhanced-stats-container .age-bar:hover {
     opacity: 0.8;
     transform: scaleY(1.05);
 }
 
-.age-label {
+#enhanced-stats-container .age-label {
     position: absolute;
     bottom: -20px;
     left: 50%;
@@ -111,7 +151,7 @@
     white-space: nowrap;
 }
 
-.age-count {
+#enhanced-stats-container .age-count {
     position: absolute;
     top: -25px;
     left: 50%;
@@ -123,11 +163,11 @@
     transition: opacity 0.3s;
 }
 
-.age-bar:hover .age-count {
+#enhanced-stats-container .age-bar:hover .age-count {
     opacity: 1;
 }
 
-.chart-stats {
+#enhanced-stats-container .chart-stats {
     display: flex;
     justify-content: space-between;
     margin-top: 1rem;
@@ -137,36 +177,40 @@
     font-size: 12px;
 }
 
-.chart-stats.country-stats {
+#enhanced-stats-container .chart-stats.country-stats {
     margin-top: 8px;
     padding-top: 8px;
     border-top: 1px solid #444;
 }
 
 /* Interactive bar styles for both age and timeline charts */
-.clickable-age-bar, .clickable-month-bar {
+#enhanced-stats-container .clickable-age-bar,
+#enhanced-stats-container .clickable-month-bar {
     transition: all 0.2s ease;
     cursor: pointer;
 }
 
-.clickable-age-bar:hover, .clickable-month-bar:hover {
+#enhanced-stats-container .clickable-age-bar:hover,
+#enhanced-stats-container .clickable-month-bar:hover {
     transform: scaleY(1.1);
     box-shadow: 0 2px 8px rgba(255,255,255,0.3);
     filter: brightness(1.2);
 }
 
-.age-bar .age-label, .month-bar .month-label {
+#enhanced-stats-container .age-bar .age-label,
+#enhanced-stats-container .month-bar .month-label {
     opacity: 0.8;
     transition: opacity 0.2s ease;
 }
 
-.clickable-age-bar:hover .age-label, .clickable-month-bar:hover .month-label {
+#enhanced-stats-container .clickable-age-bar:hover .age-label,
+#enhanced-stats-container .clickable-month-bar:hover .month-label {
     opacity: 1;
     font-weight: bold;
 }
 
 /* Timeline chart specific styles */
-.timeline-container {
+#enhanced-stats-container .timeline-container {
     position: relative;
     height: 340px;
     display: flex;
@@ -177,7 +221,7 @@
     scroll-behavior: smooth;
 }
 
-.month-bar {
+#enhanced-stats-container .month-bar {
     width: 10px;
     margin-right: 1px;
     position: relative;
@@ -185,7 +229,7 @@
     flex-shrink: 0;
 }
 
-.year-separator {
+#enhanced-stats-container .year-separator {
     position: absolute;
     bottom: -25px;
     font-size: 10px;
@@ -194,7 +238,7 @@
     white-space: nowrap;
 }
 
-.month-label {
+#enhanced-stats-container .month-label {
     position: absolute;
     bottom: -15px;
     font-size: 8px;
@@ -204,7 +248,7 @@
     white-space: nowrap;
 }
 
-.month-count {
+#enhanced-stats-container .month-count {
     position: absolute;
     top: -20px;
     font-size: 8px;
@@ -215,11 +259,11 @@
     transition: opacity 0.2s;
 }
 
-.clickable-month-bar:hover .month-count {
+#enhanced-stats-container .clickable-month-bar:hover .month-count {
     opacity: 1;
 }
 
-/* Country hover popup styles */
+/* Country hover popup styles - scoped to popup container */
 .country-hover-popup {
     position: fixed;
     z-index: 9999;
@@ -236,7 +280,7 @@
     max-height: 94vh;
 }
 
-.popup-header {
+.country-hover-popup .popup-header {
     position: relative;
     font-weight: bold;
     margin-bottom: 12px;
@@ -248,7 +292,7 @@
     align-items: center;
 }
 
-.popup-grid {
+.country-hover-popup .popup-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
@@ -257,7 +301,7 @@
     padding-right: 8px;
 }
 
-.popup-close {
+.country-hover-popup .popup-close {
     background: rgba(255,255,255,0.1);
     border: none;
     color: #ccc;
@@ -272,11 +316,11 @@
     transition: all 0.2s ease;
 }
 
-.popup-close:hover {
+.country-hover-popup .popup-close:hover {
     background: rgba(255,255,255,0.2);
 }
 
-.refresh-btn {
+#refresh-cache-btn {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -291,67 +335,32 @@
     z-index: 10;
 }
 
-.refresh-btn:hover {
+#refresh-cache-btn:hover {
     opacity: 0.8;
     color: #ffd700;
 }
 
-/* Layout and spacing */
-.stats-row {
-    margin-top: 3rem;
-    margin-bottom: 2rem;
-}
-
-.chart-column {
-    margin-bottom: 2rem;
-}
-
-.timeline-section {
-    margin-top: 2rem;
-    margin-bottom: 5rem;
-}
-
-/* Chart containers */
-.chart-container {
-    background: #1a1a1a;
-    border-radius: 8px;
-    padding: 1rem;
-    height: 400px;
-    position: relative;
-}
-
-.country-chart {
-    overflow-y: auto;
-}
-
-#timeline-chart {
-    overflow-x: auto;
-    overflow-y: hidden;
-    margin-bottom: 50px;
-}
-
-/* Popup content classes */
-.popup-loading {
+.country-hover-popup .popup-loading {
     color: #fff;
     text-align: center;
     padding: 20px;
 }
 
-.popup-error {
+.country-hover-popup .popup-error {
     color: #ff6b6b;
     text-align: center;
     padding: 10px;
 }
 
-.loading-spinner.error {
+.country-hover-popup .loading-spinner.error {
     color: #ff6b6b;
 }
 
-.popup-header-title {
+.country-hover-popup .popup-header-title {
     z-index: 1;
 }
 
-.popup-header-buttons {
+.country-hover-popup .popup-header-buttons {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
@@ -360,11 +369,11 @@
     gap: 6px;
 }
 
-.popup-header-close-wrapper {
+.country-hover-popup .popup-header-close-wrapper {
     z-index: 1;
 }
 
-.sort-btn {
+.country-hover-popup .sort-btn {
     background: rgba(255,255,255,0.08);
     border: 1px solid #555;
     color: #ddd;
@@ -375,13 +384,13 @@
     margin-left: 6px;
 }
 
-.sort-btn.active {
+.country-hover-popup .sort-btn.active {
     background: rgba(255,255,255,0.2);
     border-color: #aaa;
     color: #fff;
 }
 
-.performer-card {
+.country-hover-popup .performer-card {
     text-align: center;
     cursor: pointer;
     display: flex;
@@ -389,7 +398,7 @@
     align-items: center;
 }
 
-.performer-image {
+.country-hover-popup .performer-image {
     width: 100%;
     aspect-ratio: 3 / 4;
     height: auto;
@@ -397,7 +406,7 @@
     border-radius: 6px;
 }
 
-.performer-avatar-placeholder {
+.country-hover-popup .performer-avatar-placeholder {
     width: 100%;
     aspect-ratio: 3 / 4;
     background: #333;
@@ -409,7 +418,7 @@
     border-radius: 6px;
 }
 
-.performer-name {
+.country-hover-popup .performer-name {
     font-size: 12px;
     color: white;
     margin: 4px 0 0;
@@ -417,29 +426,63 @@
     white-space: normal;
 }
 
-.performer-scenes {
+.country-hover-popup .performer-scenes {
     font-size: 11px;
     color: #ddd;
     margin-top: 2px;
 }
 
-.performer-rating {
+.country-hover-popup .performer-rating {
     font-size: 11px;
     color: #ddd;
 }
 
-.country-chart-scroll {
+/* Layout and spacing */
+#enhanced-stats-container .stats-row {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+}
+
+#enhanced-stats-container .chart-column {
+    margin-bottom: 2rem;
+}
+
+#enhanced-stats-container .timeline-section {
+    margin-top: 2rem;
+    margin-bottom: 5rem;
+}
+
+/* Chart containers */
+#enhanced-stats-container .chart-container {
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 1rem;
+    height: 400px;
+    position: relative;
+}
+
+#enhanced-stats-container .country-chart {
+    overflow-y: auto;
+}
+
+#enhanced-stats-container #timeline-chart {
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-bottom: 50px;
+}
+
+#enhanced-stats-container .country-chart-scroll {
     max-height: 350px;
     overflow-y: auto;
     padding-right: 4px;
 }
 
-.year-separator-positioned {
+#enhanced-stats-container .year-separator-positioned {
     left: 0px;
 }
 
 /* Country row components */
-.country-flag-dynamic {
+#enhanced-stats-container .country-flag-dynamic {
     min-width: 32px;
     height: 25px;
     display: flex;
@@ -450,10 +493,10 @@
     color: white;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     border-radius: 4px 0 0 4px;
-    cursor: help;
+    cursor: pointer;
 }
 
-.country-bar-container-dynamic {
+#enhanced-stats-container .country-bar-container-dynamic {
     flex: 1;
     position: relative;
     height: 25px;
@@ -461,7 +504,7 @@
     border-radius: 0 4px 4px 0;
 }
 
-.country-bar-dynamic {
+#enhanced-stats-container .country-bar-dynamic {
     height: 100%;
     border-radius: 0 4px 4px 0;
     position: relative;
@@ -469,7 +512,7 @@
     min-width: 3%;
 }
 
-.country-name-dynamic {
+#enhanced-stats-container .country-name-dynamic {
     position: absolute;
     left: 8px;
     top: 50%;
@@ -480,7 +523,7 @@
     font-size: 14px;
 }
 
-.country-count-inside {
+#enhanced-stats-container .country-count-inside {
     position: absolute;
     right: 8px;
     top: 50%;
@@ -491,13 +534,13 @@
     font-size: 13px;
 }
 
-.age-bar-dynamic {
+#enhanced-stats-container .age-bar-dynamic {
     cursor: pointer;
     position: relative;
 }
 
 /* Country label overlay - text on top of bar */
-.country-label-overlay {
+#enhanced-stats-container .country-label-overlay {
     position: absolute;
     left: 0;
     top: 0;
@@ -512,15 +555,76 @@
     white-space: nowrap;
 }
 
-.country-name-dynamic {
+#enhanced-stats-container .country-name-dynamic {
     flex-shrink: 0;
 }
 
-.country-count-label {
+#enhanced-stats-container .country-count-label {
     color: white;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
     font-size: 13px;
     margin-left: auto;
     flex-shrink: 0;
+}
+
+/* Performer name inside container - not affected by main app changes */
+#enhanced-stats-container .performer-name {
+    font-size: 12px;
+    color: white;
+    margin: 4px 0 0;
+    line-height: 1.3;
+    white-space: normal;
+}
+
+#enhanced-stats-container .performer-scenes {
+    font-size: 11px;
+    color: #ddd;
+    margin-top: 2px;
+}
+
+#enhanced-stats-container .performer-rating {
+    font-size: 11px;
+    color: #ddd;
+}
+
+#enhanced-stats-container .performer-card {
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#enhanced-stats-container .performer-image {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    height: auto;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+#enhanced-stats-container .performer-avatar-placeholder {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: #333;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border-radius: 6px;
+}
+
+/* =================================================================== */
+/* STATS PAGE SPECIFIC - Hide third stats div */
+/* =================================================================== */
+
+div.stats:nth-child(1) > div:nth-child(3) {
+    display: none;
+}
+
+.stats .title {
+    font-size: 2.5vw;
+    margin-bottom: 0.25rem;
 }

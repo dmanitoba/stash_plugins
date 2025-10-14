@@ -51,6 +51,7 @@ class StatsEnhancer {
             'Norway': { code: 'NO', demonym: 'Norwegian', colors: ['#EF2B2D', '#FFFFFF', '#002868'] },
             'Denmark': { code: 'DK', demonym: 'Danish', colors: ['#C8102E', '#FFFFFF'] },
             'Finland': { code: 'FI', demonym: 'Finnish', colors: ['#FFFFFF', '#003580'] },
+            'Fiji': { code: 'FJ', demonym: 'Fijian', colors: ['#68BFE5', '#FFFFFF', '#CE1126'] },
             'Latvia': { code: 'LV', demonym: 'Latvian', colors: ['#9E1B34', '#FFFFFF', '#9E1B34'] },
             'Lithuania': { code: 'LT', demonym: 'Lithuanian', colors: ['#FDB913', '#006A44', '#C1272D'] },
             'Estonia': { code: 'EE', demonym: 'Estonian', colors: ['#0072CE', '#000000', '#FFFFFF'] },
@@ -86,6 +87,7 @@ class StatsEnhancer {
             'Lebanon': { code: 'LB', demonym: 'Lebanese', colors: ['#EE161F', '#FFFFFF', '#00A651'] },
             'Kenya': { code: 'KE', demonym: 'Kenyan', colors: ['#000000', '#FFFFFF', '#006600'] },
             'Kyrgyzstan': { code: 'KG', demonym: 'Kyrgyz', colors: ['#E8112D', '#FFEF00'] },
+            'Lao People\'s Democratic Republic': { code: 'LA', demonym: 'Lao', colors: ['#CE1126', '#FFFFFF', '#002868'] },
             'Indonesia': { code: 'ID', demonym: 'Indonesian', colors: ['#FF0000', '#FFFFFF'] },
             'Singapore': { code: 'SG', demonym: 'Singaporean', colors: ['#EF3340', '#FFFFFF'] },
             'Bolivia': { code: 'BO', demonym: 'Bolivian', colors: ['#D52B1E', '#F9E300', '#007934'] },
@@ -384,18 +386,39 @@ class StatsEnhancer {
 
         try {
             let performers = [];
-            console.log(`[Stats Enhancer] Loading ${requestedSortMode} data for ${country} (limit: ${limit})`);
+            // console.log(`[Stats Enhancer] Loading ${requestedSortMode} data for ${country} (limit: ${limit})`);
+            
+            // Get selected genders from filter
+            let selectedGenders = ['FEMALE']; // Default to female only if nothing saved
+            const savedGenderFilter = localStorage.getItem('stats_enhancer_gender_filter');
+            if (savedGenderFilter) {
+                try {
+                    const parsed = JSON.parse(savedGenderFilter);
+                    // Accept empty array - user deliberately deselected all
+                    if (Array.isArray(parsed)) {
+                        selectedGenders = parsed;
+                    }
+                } catch (e) {
+                    console.warn('[Stats Enhancer] Failed to parse gender filter:', e);
+                }
+            }
+            
+            // Don't show popup if no genders are selected
+            if (selectedGenders.length === 0) {
+                // console.log('[Stats Enhancer] No genders selected, skipping popup');
+                popup.innerHTML = '<div class="popup-error">Select at least one gender to view performers</div>';
+                return;
+            }
             
             // Skip server-side sorting entirely to avoid 422 errors
             // Use larger sample sizes and sort client-side for accuracy
             
             if (country === 'Unknown') {
-                // For Unknown: get larger sample and filter client-side (no direct GraphQL filter for "no country")
+                // For Unknown: get all performers and filter client-side (no direct GraphQL filter for "no country")
                 const query = `
-                    query($limit: Int!) {
+                    query {
                         findPerformers(
-                            performer_filter: { gender: { modifier: EQUALS, value: FEMALE } },
-                            filter: { per_page: $limit }
+                            filter: { per_page: -1 }
                         ) {
                             performers {
                                 id
@@ -410,12 +433,16 @@ class StatsEnhancer {
                     }
                 `;
                 
-                console.log(`[Stats Enhancer] Fetching ${requestedSortMode} data for Unknown country...`);
-                const response = await this.fetchGraphQL(query, { limit: Math.min(limit * 15, 2000) });
+                // console.log(`[Stats Enhancer] Fetching ALL ${requestedSortMode} data for Unknown country...`);
+                const response = await this.fetchGraphQL(query);
                 performers = (response.data.findPerformers.performers || []);
                 
-                // Filter to unknown country and performers with scenes
-                performers = performers.filter(p => (!p.country || !p.country.trim()) && this.getScenes(p) > 0);
+                // Filter to unknown country, selected genders, and performers with scenes
+                performers = performers.filter(p => 
+                    (!p.country || !p.country.trim()) && 
+                    selectedGenders.includes(p.gender) && 
+                    this.getScenes(p) > 0
+                );
                 
                 // Sort client-side since we can't sort filtered results on server
                 if (requestedSortMode === 'rating') {
@@ -425,20 +452,19 @@ class StatsEnhancer {
                 }
                 
                 performers = performers.slice(0, limit);
-                console.log(`[Stats Enhancer] Got ${performers.length} unknown country performers`);
+                // console.log(`[Stats Enhancer] Got ${performers.length} unknown country performers`);
                 
             } else {
-                // For specific countries: use efficient GraphQL filtering and sorting
+                // For specific countries: fetch ALL performers without limit
                 const sortField = requestedSortMode === 'rating' ? 'rating' : 'scenes_count';
                 const query = `
-                    query($country: String!, $limit: Int!) {
+                    query($country: String!) {
                         findPerformers(
                             performer_filter: { 
-                                gender: { modifier: EQUALS, value: FEMALE },
                                 country: { modifier: EQUALS, value: $country }
                             },
                             filter: { 
-                                per_page: $limit,
+                                per_page: -1,
                                 sort: "${sortField}",
                                 direction: DESC
                             }
@@ -456,27 +482,42 @@ class StatsEnhancer {
                     }
                 `;
                 
-                console.log(`[Stats Enhancer] Fetching ${requestedSortMode} data for ${country}...`);
-                const response = await this.fetchGraphQL(query, { country, limit: Math.min(limit * 2, 500) });
+                // console.log(`[Stats Enhancer] Fetching ALL ${requestedSortMode} data for ${country}...`);
+                
+                const response = await this.fetchGraphQL(query, { country });
                 performers = (response.data.findPerformers.performers || []);
+                
+                // console.log(`[Stats Enhancer] Fetched ${performers.length} total performers from ${country}`);
+                
+                // Filter to selected genders first
+                performers = performers.filter(p => selectedGenders.includes(p.gender));
+                
+                // console.log(`[Stats Enhancer] After gender filter: ${performers.length} performers matching ${selectedGenders.join(', ')}`);
                 
                 // Filter out zero-scene performers if sorting by scenes
                 if (requestedSortMode === 'scenes') {
                     performers = performers.filter(p => this.getScenes(p) > 0);
                 }
                 
+                // Client-side sort since we filtered by gender after server query
+                if (requestedSortMode === 'rating') {
+                    performers.sort((a, b) => (this.getRating10(b) || 0) - (this.getRating10(a) || 0));
+                } else {
+                    performers.sort((a, b) => this.getScenes(b) - this.getScenes(a));
+                }
+                
                 performers = performers.slice(0, limit);
-                console.log(`[Stats Enhancer] Got ${performers.length} performers for ${country}`);
+                // console.log(`[Stats Enhancer] Got ${performers.length} performers for ${country}`);
             }
 
-            console.log(`[Stats Enhancer] Final result: ${performers.length} performers for ${country} (${requestedSortMode})`);
+            // console.log(`[Stats Enhancer] Final result: ${performers.length} performers for ${country} (${requestedSortMode})`);
             if (performers.length > 0) {
                 const first = performers[0];
                 const last = performers[performers.length - 1];
                 if (requestedSortMode === 'rating') {
-                    console.log(`[Stats Enhancer] Rating range: ${this.getRating10(first)?.toFixed(1)} to ${this.getRating10(last)?.toFixed(1)}`);
+                    // console.log(`[Stats Enhancer] Rating range: ${this.getRating10(first)?.toFixed(1)} to ${this.getRating10(last)?.toFixed(1)}`);
                 } else {
-                    console.log(`[Stats Enhancer] Scene count range: ${this.getScenes(first)} to ${this.getScenes(last)}`);
+                    // console.log(`[Stats Enhancer] Scene count range: ${this.getScenes(first)} to ${this.getScenes(last)}`);
                 }
             }
 
@@ -484,7 +525,28 @@ class StatsEnhancer {
             const displayName = countryRow.dataset.countryDisplay || country;
             const demonym = countryRow.dataset.demonym || displayName;
             const flagCode = (countryRow.dataset.flag || '').toUpperCase();
-            const pluralNoun = (flagCode === 'US' || flagCode === 'RU') ? 'Whores' : 'Sluts';
+            
+            // Determine plural noun based on selected genders (already loaded earlier in function)
+            let pluralNoun = 'Performers'; // Default fallback
+            
+            // Only determine specific noun if we have selected genders (safety check)
+            if (selectedGenders && selectedGenders.length > 0) {
+                const hasMale = selectedGenders.includes('MALE');
+                const hasFemale = selectedGenders.includes('FEMALE');
+                const hasTrans = selectedGenders.some(g => ['TRANSGENDER_FEMALE', 'TRANSGENDER_MALE', 'INTERSEX', 'NON_BINARY'].includes(g));
+                
+                if (hasMale && !hasFemale && !hasTrans) {
+                    // Male only
+                    pluralNoun = 'Cocks';
+                } else if (hasTrans && !hasMale && !hasFemale) {
+                    // Trans only
+                    pluralNoun = 'Shemales';
+                } else if (hasFemale) {
+                    // Female (with or without others) - use original female logic
+                    pluralNoun = (flagCode === 'US' || flagCode === 'RU') ? 'Whores' : 'Sluts';
+                }
+            }
+            
             const modeNote = requestedSortMode === 'rating' ? ' ~ Top Rated' : ' ~ Most Scenes';
             const countText = performers.length === totalCount ? `All ${performers.length}` : `Top ${performers.length}`;
             
@@ -540,7 +602,7 @@ class StatsEnhancer {
                 e.preventDefault();
                 e.stopPropagation(); 
                 e.stopImmediatePropagation();
-                console.log(`[Stats Enhancer] Switching to scenes sort for ${country}`);
+                // console.log(`[Stats Enhancer] Switching to scenes sort for ${country}`);
                 popup.dataset.sortMode = 'scenes'; 
                 popup.dataset.sticky = 'true'; // Keep popup open
                 this.showCountryPerformers(countryRow); 
@@ -549,7 +611,7 @@ class StatsEnhancer {
                 e.preventDefault();
                 e.stopPropagation(); 
                 e.stopImmediatePropagation();
-                console.log(`[Stats Enhancer] Switching to rating sort for ${country}`);
+                // console.log(`[Stats Enhancer] Switching to rating sort for ${country}`);
                 popup.dataset.sortMode = 'rating'; 
                 popup.dataset.sticky = 'true'; // Keep popup open
                 this.showCountryPerformers(countryRow); 
@@ -558,7 +620,7 @@ class StatsEnhancer {
                 e.preventDefault();
                 e.stopPropagation(); 
                 e.stopImmediatePropagation();
-                console.log(`[Stats Enhancer] Closing popup for ${country}`);
+                // console.log(`[Stats Enhancer] Closing popup for ${country}`);
                 popup.style.display = 'none';
                 popup.dataset.sticky = 'false';
             });
@@ -641,13 +703,26 @@ class StatsEnhancer {
         enhancedContainer.innerHTML = `
             <div class="col col-sm-8 m-sm-auto row stats-row">
                 <div class="col-md-6 chart-column" id="country-stats-container">
-                    <div class="stats-chart-title">Top Countries (Female Performers)</div>
+                    <div class="stats-chart-title">
+                        <span>Top Performers by Country</span>
+                        <div class="gender-icon-filters">
+                            <svg data-prefix="fas" data-icon="mars" class="svg-inline--fa fa-mars gender-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-gender="MALE" title="Male">
+                                <path fill="currentColor" d="M289.8 46.8c3.7-9 12.5-14.8 22.2-14.8H424c13.3 0 24 10.7 24 24V168c0 9.7-5.8 18.5-14.8 22.2s-19.3 1.7-26.2-5.2l-33.4-33.4L321 204.2c19.5 28.4 31 62.7 31 99.8c0 97.2-78.8 176-176 176S0 401.2 0 304s78.8-176 176-176c37 0 71.4 11.4 99.8 31l52.6-52.6L295 73c-6.9-6.9-8.9-17.2-5.2-26.2zM400 80l0 0h0v0zM176 416a112 112 0 1 0 0-224 112 112 0 1 0 0 224z"></path>
+                            </svg>
+                            <svg data-prefix="fas" data-icon="venus" class="svg-inline--fa fa-venus gender-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-gender="FEMALE" title="Female">
+                                <path fill="currentColor" d="M64 176a112 112 0 1 1 224 0A112 112 0 1 1 64 176zM208 349.1c81.9-15 144-86.8 144-173.1C352 78.8 273.2 0 176 0S0 78.8 0 176c0 86.3 62.1 158.1 144 173.1V384H112c-17.7 0-32 14.3-32 32s14.3 32 32 32h32v32c0 17.7 14.3 32 32 32s32-14.3 32-32V448h32c17.7 0 32-14.3 32-32s-14.3-32-32-32H208V349.1z"></path>
+                            </svg>
+                            <svg data-prefix="fas" data-icon="transgender" class="svg-inline--fa fa-transgender gender-icon" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-gender="TRANS" title="Trans / Intersex / Non-Binary">
+                                <path fill="currentColor" d="M112 0c6.5 0 12.3 3.9 14.8 9.9s1.1 12.9-3.5 17.4l-31 31L112 78.1l7-7c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-7 7 15.2 15.2C187.7 107.6 220.5 96 256 96s68.3 11.6 94.9 31.2l68.8-68.8-31-31c-4.6-4.6-5.9-11.5-3.5-17.4s8.3-9.9 14.8-9.9h96c8.8 0 16 7.2 16 16v96c0 6.5-3.9 12.3-9.9 14.8s-12.9 1.1-17.4-3.5l-31-31-68.8 68.8C404.4 187.7 416 220.5 416 256c0 80.2-59 146.6-136 158.2V432h16c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v8c0 13.3-10.7 24-24 24s-24-10.7-24-24v-8H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h16V414.2C155 402.6 96 336.2 96 256c0-35.5 11.6-68.3 31.2-94.9L112 145.9l-7 7c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l7-7L58.3 92.3l-31 31c-4.6 4.6-11.5 5.9-17.4 3.5S0 118.5 0 112V16C0 7.2 7.2 0 16 0h96zM352 256a96 96 0 1 0 -192 0 96 96 0 1 0 192 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
                     <div id="country-chart" class="chart-container country-chart">
                         <div class="loading-spinner">Loading country data...</div>
                     </div>
                 </div>
                 <div class="col-md-6 chart-column" id="age-stats-container">
-                    <div class="stats-chart-title">Age Distribution (All Performers)</div>
+                    <div class="stats-chart-title">Age Distribution</div>
                     <div id="age-chart" class="chart-container age-chart">
                         <div class="loading-spinner">Loading age data...</div>
                     </div>
@@ -712,10 +787,116 @@ class StatsEnhancer {
                 refreshBtn.style.color = '#888';
             });
         }
+        
+        // Get gender icons
+        const genderIcons = document.querySelectorAll('.gender-icon');
+        
+        // Load saved gender filter preferences FIRST before adding listeners
+        const savedGenderFilter = localStorage.getItem('stats_enhancer_gender_filter');
+        if (savedGenderFilter) {
+            try {
+                const selectedGenders = JSON.parse(savedGenderFilter);
+                
+                // Determine which icons should be active based on saved preferences
+                genderIcons.forEach(icon => {
+                    const gender = icon.getAttribute('data-gender');
+                    let shouldBeActive = false;
+                    
+                    if (gender === 'MALE' && selectedGenders.includes('MALE')) {
+                        shouldBeActive = true;
+                    } else if (gender === 'FEMALE' && selectedGenders.includes('FEMALE')) {
+                        shouldBeActive = true;
+                    } else if (gender === 'TRANS' && 
+                        (selectedGenders.includes('TRANSGENDER_FEMALE') || 
+                         selectedGenders.includes('TRANSGENDER_MALE') || 
+                         selectedGenders.includes('INTERSEX') || 
+                         selectedGenders.includes('NON_BINARY'))) {
+                        shouldBeActive = true;
+                    }
+                    
+                    if (shouldBeActive) {
+                        icon.classList.add('active');
+                    } else {
+                        icon.classList.remove('active');
+                    }
+                });
+            } catch (e) {
+                console.warn('[Stats Enhancer] Failed to parse saved gender filter:', e);
+            }
+        } else {
+            // Set default to Female only if no saved preference
+            // console.log('[Stats Enhancer] No saved gender filter, using default: FEMALE');
+            localStorage.setItem('stats_enhancer_gender_filter', JSON.stringify(['FEMALE']));
+            
+            // Also set the Female icon as active in the UI
+            genderIcons.forEach(icon => {
+                const gender = icon.getAttribute('data-gender');
+                if (gender === 'FEMALE') {
+                    icon.classList.add('active');
+                } else {
+                    icon.classList.remove('active');
+                }
+            });
+        }
+        
+        // Add gender filter icon listeners AFTER loading preferences
+        genderIcons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                const gender = icon.getAttribute('data-gender');
+                
+                // Toggle active state
+                icon.classList.toggle('active');
+                
+                // Build selected gender list
+                const selectedGenders = [];
+                document.querySelectorAll('.gender-icon.active').forEach(activeIcon => {
+                    const activeGender = activeIcon.getAttribute('data-gender');
+                    if (activeGender === 'MALE') {
+                        selectedGenders.push('MALE');
+                    } else if (activeGender === 'FEMALE') {
+                        selectedGenders.push('FEMALE');
+                    } else if (activeGender === 'TRANS') {
+                        // Trans icon includes all trans/intersex/non-binary
+                        selectedGenders.push('TRANSGENDER_FEMALE', 'TRANSGENDER_MALE', 'INTERSEX', 'NON_BINARY');
+                    }
+                });
+                
+                // Save filter preferences to localStorage
+                localStorage.setItem('stats_enhancer_gender_filter', JSON.stringify(selectedGenders));
+                
+                // Reload country data with new filters
+                this.loadCountryData();
+            });
+        });
     }
 
     async loadCountryData() {
         try {
+            // Get selected genders from filter checkboxes
+            let selectedGenders = ['FEMALE']; // Default to female only if nothing saved
+            const savedGenderFilter = localStorage.getItem('stats_enhancer_gender_filter');
+            if (savedGenderFilter) {
+                try {
+                    const parsed = JSON.parse(savedGenderFilter);
+                    // Accept empty array - user deliberately deselected all
+                    if (Array.isArray(parsed)) {
+                        selectedGenders = parsed;
+                    }
+                } catch (e) {
+                    console.warn('[Stats Enhancer] Failed to parse gender filter, using default:', e);
+                }
+            }
+            
+            // Don't load if no genders are selected
+            if (selectedGenders.length === 0) {
+                // console.log('[Stats Enhancer] No genders selected, skipping country data load');
+                document.getElementById('country-chart').innerHTML = 
+                    '<div class="loading-spinner">Select at least one gender to view data</div>';
+                return;
+            }
+            
+            // console.log(`[Stats Enhancer] Loading country data for genders: ${selectedGenders.join(', ')}`);
+            
             // Get all performers using pagination to handle large datasets
             let allPerformers = [];
             let page = 1;
@@ -745,23 +926,26 @@ class StatsEnhancer {
                 hasMore = data.performers.length === perPage;
                 page++;
                 
-                // Update loading indicator
+                // Update loading indicator with gender info
+                const genderText = selectedGenders.length === 1 ? selectedGenders[0] : `${selectedGenders.length} genders`;
                 document.getElementById('country-chart').innerHTML = 
-                    `<div class="loading-spinner">Loading performers... ${allPerformers.length.toLocaleString()}</div>`;
+                    `<div class="loading-spinner">Loading performers (${genderText})... ${allPerformers.length.toLocaleString()}</div>`;
             }
 
             const performers = allPerformers;
             
-            // Filter for female performers (include all, even with 0 scenes for consistency)
-            const femalePerformers = performers.filter(p => 
-                p.gender === 'FEMALE' && this.getScenes(p) >= 0
+            // Filter for selected genders (include all, even with 0 scenes for consistency)
+            const filteredPerformers = performers.filter(p => 
+                selectedGenders.includes(p.gender) && this.getScenes(p) >= 0
             );
+            
+            // console.log(`[Stats Enhancer] Filtered to ${filteredPerformers.length} performers from ${selectedGenders.join(', ')}`);
             
             // Count performers by country - NORMALIZE TO UPPERCASE for consistent grouping
             const countryCounts = {};
             let unknownCount = 0;
             
-            femalePerformers.forEach(performer => {
+            filteredPerformers.forEach(performer => {
                 if (performer.country && performer.country.trim()) {
                     // Normalize to uppercase to group case variations (NO, no, No -> NO)
                     const country = performer.country.trim().toUpperCase();
@@ -798,7 +982,7 @@ class StatsEnhancer {
             
             // Use cached data if it exists and doesn't need weekly refresh
             if (cachedData && cacheTime && !shouldRefreshCache) {
-                console.log('[Stats Enhancer] Using cached age data');
+                // console.log('[Stats Enhancer] Using cached age data');
                 const { ageCounts, unknownAgeCount } = JSON.parse(cachedData);
                 this.renderAgeChart(ageCounts, unknownAgeCount);
                 return;
@@ -882,7 +1066,7 @@ class StatsEnhancer {
             const dataToCache = { ageCounts, unknownAgeCount };
             localStorage.setItem(cacheKey, JSON.stringify(dataToCache));
             localStorage.setItem(cacheTimeKey, Date.now().toString());
-            console.log('[Stats Enhancer] Age data cached until next Sunday 4am');
+            // console.log('[Stats Enhancer] Age data cached until next Sunday 4am');
 
             this.renderAgeChart(ageCounts, unknownAgeCount);
             
@@ -907,7 +1091,7 @@ class StatsEnhancer {
             
             // Use cached data if it exists and doesn't need refresh
             if (cachedData && cacheTime && !shouldRefreshCache) {
-                console.log('[Stats Enhancer] Using cached timeline data');
+                // console.log('[Stats Enhancer] Using cached timeline data');
                 const monthlyCounts = JSON.parse(cachedData);
                 this.renderTimelineChart(monthlyCounts);
                 return;
@@ -973,7 +1157,7 @@ class StatsEnhancer {
             // Cache the results for faster future loads
             localStorage.setItem(cacheKey, JSON.stringify(monthlyCounts));
             localStorage.setItem(cacheTimeKey, Date.now().toString());
-            console.log('[Stats Enhancer] Timeline data cached (daily refresh for current month, weekly for historical data)');
+            // console.log('[Stats Enhancer] Timeline data cached (daily refresh for current month, weekly for historical data)');
 
             this.renderTimelineChart(monthlyCounts);
             
@@ -1090,7 +1274,7 @@ class StatsEnhancer {
                 const count = parseInt(e.currentTarget.dataset.count);
                 
                 if (count === 0) {
-                    console.log(`[Stats Enhancer] No scenes for ${month}`);
+                    // console.log(`[Stats Enhancer] No scenes for ${month}`);
                     return;
                 }
                 
@@ -1137,16 +1321,16 @@ class StatsEnhancer {
                     timelineContainer.scrollLeft += scrollAmount;
                     
                 } else {
-                    console.log('[Stats Enhancer] Timeline container not found inside timeline chart');
+                    // console.log('[Stats Enhancer] Timeline container not found inside timeline chart');
                 }
             }
         }, { passive: false });
         
-        console.log('[Stats Enhancer] Timeline mousewheel scrolling enabled with document delegation');
+        // console.log('[Stats Enhancer] Timeline mousewheel scrolling enabled with document delegation');
     }
 
     navigateToScenesForMonth(monthKey) {
-        console.log(`[Stats Enhancer] ===== FILTERING BY MONTH ${monthKey} =====`);
+        // console.log(`[Stats Enhancer] ===== FILTERING BY MONTH ${monthKey} =====`);
         
         try {
             const [year, month] = monthKey.split('-');
@@ -1160,12 +1344,12 @@ class StatsEnhancer {
             const lastDay = new Date(yearInt, monthInt, 0).getDate(); // 0 gets last day of previous month (which is current month)
             const endDate = `${year}-${month}-${lastDay.toString().padStart(2, '0')}`;
             
-            console.log(`[Stats Enhancer] Date range: ${startDate} to ${endDate}`);
+            // console.log(`[Stats Enhancer] Date range: ${startDate} to ${endDate}`);
             
             // Simplified filter - just date range
             const dateFilter = `("type":"date","modifier":"BETWEEN","value":("value":"${startDate}","value2":"${endDate}"))`;
             
-            console.log(`[Stats Enhancer] Using simplified date filter:`, {dateFilter});
+            // console.log(`[Stats Enhancer] Using simplified date filter:`, {dateFilter});
             
             // Construct URL with simplified filter
             const searchParams = new URLSearchParams();
@@ -1176,22 +1360,28 @@ class StatsEnhancer {
             
             const filterUrl = `/scenes?${searchParams.toString()}`;
             
-            console.log(`[Stats Enhancer] ===== CONSTRUCTED URL: ${filterUrl} =====`);
-            console.log(`[Stats Enhancer] URL decoded: ${decodeURIComponent(filterUrl)}`);
+            // console.log(`[Stats Enhancer] ===== CONSTRUCTED URL: ${filterUrl} =====`);
+            // console.log(`[Stats Enhancer] URL decoded: ${decodeURIComponent(filterUrl)}`);
             
             // Navigate to the filtered view
-            console.log(`[Stats Enhancer] ===== NAVIGATING TO MONTH FILTER =====`);
+            // console.log(`[Stats Enhancer] ===== NAVIGATING TO MONTH FILTER =====`);
             window.location.href = filterUrl;
             
         } catch (error) {
-            console.error('[Stats Enhancer] ===== ERROR IN MONTH URL CONSTRUCTION =====', error);
-            console.log('[Stats Enhancer] Falling back to basic scenes page');
+            console.error('[Stats Enhancer] Error in month URL construction:', error);
+            // console.log('[Stats Enhancer] Falling back to basic scenes page');
             window.location.href = '/scenes';
         }
     }
 
     renderCountryChart(sortedCountries, unknownCount) {
         const container = document.getElementById('country-chart');
+        
+        // Check if there are no results at all
+        if ((!sortedCountries || sortedCountries.length === 0) && (!unknownCount || unknownCount === 0)) {
+            container.innerHTML = '<div class="loading-spinner">No performers found for selected genders</div>';
+            return;
+        }
         
         // Build full rows list and compute max from all rows (including Unknown)
         const rows = unknownCount > 0 
@@ -1222,8 +1412,8 @@ class StatsEnhancer {
             
             if (country === 'Unknown') {
                 displayName = 'Unknown';
-                barGradient = 'linear-gradient(85deg, #555, #333)';
-                flagEmoji = '❓';
+                barGradient = 'linear-gradient(85deg, #1e88e5, #26a69a, #66bb6a)';
+                flagEmoji = '🌍';
                 flagCode = '??';
             } else {
                     if (countryInfo) {
@@ -1399,14 +1589,14 @@ class StatsEnhancer {
     }
 
     navigateToScenesWithPerformerAge(age) {
-        console.log(`[Stats Enhancer] ===== FILTERING BY AGE ${age} =====`);
+        // console.log(`[Stats Enhancer] ===== FILTERING BY AGE ${age} =====`);
         
         try {
             // Use the simple format that we know works
             // Your working URL format: c=("type":"performer_age","modifier":"EQUALS","value":("value":50))
             const performerAgeFilter = `("type":"performer_age","modifier":"EQUALS","value":("value":${age}))`;
             
-            console.log(`[Stats Enhancer] Using working age filter:`, performerAgeFilter);
+            // console.log(`[Stats Enhancer] Using working age filter:`, performerAgeFilter);
             
             // Construct URL exactly like your working example
             const searchParams = new URLSearchParams();
@@ -1416,16 +1606,16 @@ class StatsEnhancer {
             
             const filterUrl = `/scenes?${searchParams.toString()}`;
             
-            console.log(`[Stats Enhancer] ===== CONSTRUCTED URL: ${filterUrl} =====`);
-            console.log(`[Stats Enhancer] URL decoded: ${decodeURIComponent(filterUrl)}`);
+            // console.log(`[Stats Enhancer] ===== CONSTRUCTED URL: ${filterUrl} =====`);
+            // console.log(`[Stats Enhancer] URL decoded: ${decodeURIComponent(filterUrl)}`);
             
             // Navigate directly to the working filter
-            console.log(`[Stats Enhancer] ===== NAVIGATING TO AGE FILTER =====`);
+            // console.log(`[Stats Enhancer] ===== NAVIGATING TO AGE FILTER =====`);
             window.location.href = filterUrl;
             
         } catch (error) {
-            console.error('[Stats Enhancer] ===== ERROR IN URL CONSTRUCTION =====', error);
-            console.log('[Stats Enhancer] Falling back to basic scenes page');
+            console.error('[Stats Enhancer] Error in URL construction:', error);
+            // console.log('[Stats Enhancer] Falling back to basic scenes page');
             window.location.href = '/scenes';
         }
     }
@@ -1461,4 +1651,4 @@ class StatsEnhancer {
 // Initialize when script loads
 window.statsEnhancer = new StatsEnhancer();
 
-console.log('[Stats Enhancer] Plugin loaded successfully');
+// console.log('[Stats Enhancer] Plugin loaded successfully');
