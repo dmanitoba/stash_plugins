@@ -1,15 +1,5 @@
 // Stats Enhancer Plugin - Interactive country performer stats
 
-// Load CSS
-(function() {
-    if (!document.querySelector('link[href*="stats_enhancer.css"]')) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = '/plugin/stats_enhancer/stats_enhancer.css';
-        document.head.appendChild(link);
-    }
-})();
-
 class StatsEnhancer {
     constructor() {
         // Country mapping with full names as keys
@@ -674,23 +664,64 @@ class StatsEnhancer {
     }
 
     observePageChanges() {
-        const observer = new MutationObserver(() => {
-            this.checkForStatsPage();
-        });
+        // Single URL-based observer to detect navigation
+        let lastUrl = location.href;
+        const urlCheckInterval = setInterval(() => {
+            const url = location.href;
+            if (url !== lastUrl) {
+                lastUrl = url;
+                this.checkForStatsPage();
+            }
+            // Also check on every interval if we're on stats page (in case we missed initial load)
+            else if (url.includes('/stats')) {
+                this.checkForStatsPage();
+            }
+        }, 500); // Check URL every 500ms
         
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+        // Store interval ID so we can clean it up if needed
+        this.urlCheckInterval = urlCheckInterval;
     }
 
     checkForStatsPage() {
-        // Check if we're on the stats page and the basic stats are loaded
-        if (window.location.pathname.includes('/stats') && 
-            document.querySelector('.stats') && 
-            !document.querySelector('#enhanced-stats-container')) {
-            setTimeout(() => this.addEnhancedStats(), 1000);
+        // Prevent multiple simultaneous checks
+        if (this.isCheckingStatsPage) return;
+        
+        // Check if we're on the stats page
+        const onStatsPage = window.location.pathname.includes('/stats');
+        
+        // If we've left the stats page, reset the flag
+        if (!onStatsPage && this.statsLoaded) {
+            this.statsLoaded = false;
+            return;
         }
+        
+        // Don't check if not on stats page or already loaded
+        if (!onStatsPage) return;
+        if (this.statsLoaded) return;
+        
+        // Check if we already have enhanced stats
+        if (document.querySelector('#enhanced-stats-container')) {
+            this.statsLoaded = true;
+            return;
+        }
+        
+        // Check if the basic stats are loaded (wait for them)
+        const statsElement = document.querySelector('.stats');
+        if (!statsElement) return; // Not ready yet
+        
+        // All conditions met - add enhanced stats
+        this.isCheckingStatsPage = true;
+        
+        // Wait for page to settle before adding stats
+        setTimeout(() => {
+            // Double-check we still need to add stats (another check might have run)
+            if (!document.querySelector('#enhanced-stats-container')) {
+                console.log('[Stats Enhancer] Plugin loaded');
+                this.addEnhancedStats();
+                this.statsLoaded = true;
+            }
+            this.isCheckingStatsPage = false;
+        }, 500);
     }
 
     async addEnhancedStats() {

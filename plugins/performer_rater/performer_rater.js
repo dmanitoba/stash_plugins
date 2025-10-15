@@ -1,4 +1,4 @@
-console.log('[Performer Rater] Plugin loading...');
+// console.log('[Performer Rater] Plugin loading...');
 
 class PerformerRater {
     constructor() {
@@ -71,8 +71,6 @@ class PerformerRater {
 
         // Add to toolbar at the end
         toolbar.appendChild(rateButton);
-        
-        console.log('[Performer Rater] Rate button added to toolbar');
     }
 
     startRating() {
@@ -88,7 +86,6 @@ class PerformerRater {
         this.showCurrentPerformer();
         this.setupKeyboardListeners();
         
-        console.log(`[Performer Rater] Started rating with ${this.performers.length} performers`);
     }
 
     collectPerformers() {
@@ -109,12 +106,11 @@ class PerformerRater {
             if (link && img && nameElement) {
                 const href = link.getAttribute('href');
                 const performerId = href.split('/performers/')[1]?.split('?')[0];
-                console.log('performerId: ', performerId);
                 
                 if (performerId) {
                     // Get the clean performer name directly from the span
                     let performerName = nameElement.textContent.trim().replace(/\s+/g, ' ') || 'Unknown';
-                    console.log('performerName from .performer-name span: ', performerName);
+                    // console.log('performerName from .performer-name span: ', performerName);
                     
                     // Extract the gender SVG icon from the card
                     const genderSvg = card.querySelector('.gender-icon');
@@ -135,7 +131,6 @@ class PerformerRater {
             }
         });
         
-        console.log(`[Performer Rater] Collected ${this.performers.length} performers`);
     }
 
     createRatingOverlay() {
@@ -296,12 +291,12 @@ class PerformerRater {
         // Handle paste events for URL input
         const urlInput = document.getElementById('image-url-input');
         urlInput.addEventListener('paste', (e) => {
-            console.log('[Performer Rater] Paste event detected');
+            // console.log('[Performer Rater] Paste event detected');
             
             // Small delay to let paste complete, then auto-update
             setTimeout(() => {
                 const pastedValue = urlInput.value.trim();
-                console.log(`[Performer Rater] Pasted value: "${pastedValue}"`);
+                // console.log(`[Performer Rater] Pasted value: "${pastedValue}"`);
                 
                 if (pastedValue) {
                     // Just update the image preview, don't hide the input
@@ -377,7 +372,7 @@ class PerformerRater {
         let imageUrl = performer.imageUrl; // Default fallback
         try {
             const currentPerformerData = await this.getPerformer(performer.id);
-            console.log('currentPerformerData: ', currentPerformerData);
+            // console.log('currentPerformerData: ', currentPerformerData);
             if (currentPerformerData && currentPerformerData.image_path) {
                 // Use the image_path from the database (this will be the updated image)
                 imageUrl = `/performer/${performer.id}/image?t=${Date.now()}`;
@@ -410,7 +405,7 @@ class PerformerRater {
             // Use setTimeout to ensure the blank takes effect and force reload
             setTimeout(() => {
                 performerImageEl.src = cacheBustedUrl;
-                console.log(`[Performer Rater] Loading image with cache-busting: ${cacheBustedUrl}`);
+                // console.log(`[Performer Rater] Loading image with cache-busting: ${cacheBustedUrl}`);
             }, 50);
         }
         
@@ -427,7 +422,7 @@ class PerformerRater {
         // Load performer data from API
         try {
             const performerData = await this.getPerformer(performer.id);
-            console.log('performerData: ', performerData);
+            // console.log('performerData: ', performerData);
             this.loadPerformerData(performerData);
             
         } catch (error) {
@@ -474,10 +469,10 @@ class PerformerRater {
         
         // Load measurements data
         const measurements = performerData.measurements;
-        console.log(`[Performer Rater] Loading measurements data: "${measurements}"`);
+        // console.log(`[Performer Rater] Loading measurements data: "${measurements}"`);
         
         if (measurements && measurements.trim()) {
-            console.log(`[Performer Rater] Setting measurements input to: "${measurements}"`);
+            // console.log(`[Performer Rater] Setting measurements input to: "${measurements}"`);
             document.getElementById('measurements-input').value = measurements;
             
             // Trigger input handler to parse and set up buttons
@@ -485,7 +480,7 @@ class PerformerRater {
                 this.handleMeasurementsInput();
             }, 100);
         } else {
-            console.log(`[Performer Rater] No measurements found, setting defaults`);
+            // console.log(`[Performer Rater] No measurements found, setting defaults`);
             // Set default 34C
             this.selectedSize = '34';
             this.selectedCup = 'C';
@@ -511,7 +506,7 @@ class PerformerRater {
     }
 
     setDefaults() {
-        console.log(`[Performer Rater] setDefaults called`);
+        // console.log(`[Performer Rater] setDefaults called`);
         // Default to natural
         this.setFakeTits('Natural');
         
@@ -559,12 +554,12 @@ class PerformerRater {
         
         try {
             await this.updatePerformerRating(performer.id, rating);
-            console.log(`[Performer Rater] Rated ${performer.name}: ${rating}`);
+            // console.log(`[Performer Rater] Rated ${performer.name}: ${rating}`);
             
             // Save all current tags
             if (this.currentTags.size > 0) {
                 await this.savePerformerTags(performer.id);
-                console.log(`[Performer Rater] Saved tags for ${performer.name}: ${[...this.currentTags].join(', ')}`);
+                // console.log(`[Performer Rater] Saved tags for ${performer.name}: ${[...this.currentTags].join(', ')}`);
             }
             
             // Update fake tits and measurements
@@ -659,7 +654,7 @@ class PerformerRater {
             throw new Error(result.errors[0].message);
         }
 
-        console.log(`[Performer Rater] Updated details for performer ${performerId}: fake_tits=${this.selectedFakeTits}, measurements=${measurements}`);
+        // console.log(`[Performer Rater] Updated details for performer ${performerId}: fake_tits=${this.selectedFakeTits}, measurements=${measurements}`);
         return result.data;
     }
 
@@ -857,11 +852,11 @@ class PerformerRater {
             if (!performer || performer.customImageUrl !== null) return; // Already loaded or no performer
             
             const performerData = await this.getPerformer(performer.id);
-            console.log('performerData: ', performerData);
+            // console.log('performerData: ', performerData);
             const customImageUrl = this.extractCustomImageUrlFromDetails(performerData.details);
             
             this.performers[performerIndex].customImageUrl = customImageUrl || false; // false means no custom URL
-            console.log(`[Performer Rater] Loaded custom image URL for performer ${performer.id}: ${customImageUrl || 'none'}`);
+            // console.log(`[Performer Rater] Loaded custom image URL for performer ${performer.id}: ${customImageUrl || 'none'}`);
         } catch (error) {
             console.error(`[Performer Rater] Error loading custom image URL:`, error);
             this.performers[performerIndex].customImageUrl = false;
@@ -882,7 +877,7 @@ class PerformerRater {
         // If there's a custom image, we can skip rating but still save the image
         const performer = this.performers[this.currentIndex];
         if (performer && performer.customImageUrl) {
-            console.log(`[Performer Rater] Skipped rating but image was already saved for ${performer.name}`);
+            // console.log(`[Performer Rater] Skipped rating but image was already saved for ${performer.name}`);
         }
         this.nextPerformer();
     }
@@ -1071,7 +1066,7 @@ class PerformerRater {
             const searchTerm = `nude ${performerName}`;
             const searchQuery = encodeURIComponent(searchTerm);
             
-            console.log(`[Performer Rater] Search query: ${searchTerm}`);
+            // console.log(`[Performer Rater] Search query: ${searchTerm}`);
             
             // Use imgar=t for tall/portrait images
             const googleImagesUrl = `https://www.google.com/search?q=${searchQuery}&tbm=isch&tbs=isz:l,itp:photo&imgar=t`;
@@ -1138,7 +1133,7 @@ class PerformerRater {
             const measurementsInput = document.getElementById('measurements-input');
             const currentValue = measurementsInput.value.trim();
             
-            console.log(`[Performer Rater] updateMeasurementsFromButtons: currentValue="${currentValue}", selectedSize="${this.selectedSize}", selectedCup="${this.selectedCup}"`);
+            // console.log(`[Performer Rater] updateMeasurementsFromButtons: currentValue="${currentValue}", selectedSize="${this.selectedSize}", selectedCup="${this.selectedCup}"`);
             
             // Set flag to prevent input handler from interfering
             this.updatingFromButtons = true;
@@ -1151,29 +1146,29 @@ class PerformerRater {
             if (fullMatch) {
                 const [, , , waistHips] = fullMatch;
                 newValue = this.selectedSize + this.selectedCup + waistHips;
-                console.log(`[Performer Rater] Full match found, preserving waist-hips: "${waistHips}"`);
+                // console.log(`[Performer Rater] Full match found, preserving waist-hips: "${waistHips}"`);
             } else {
                 // Check if we have any waist-hips portion to preserve (e.g., "32C-24-34" -> "-24-34")
                 const partialMatch = currentValue.match(/^(\d{2})([A-H]+)(-\d{2}-\d{2}.*)$/);
                 if (partialMatch) {
                     const [, , , waistHips] = partialMatch;
                     newValue = this.selectedSize + this.selectedCup + waistHips;
-                    console.log(`[Performer Rater] Partial match found, preserving waist-hips: "${waistHips}"`);
+                    // console.log(`[Performer Rater] Partial match found, preserving waist-hips: "${waistHips}"`);
                 } else {
                     // Look for any trailing waist-hips pattern even if bust doesn't match button format
                     const waistHipsMatch = currentValue.match(/(-\d{2}-\d{2}.*)$/);
                     if (waistHipsMatch) {
                         newValue = this.selectedSize + this.selectedCup + waistHipsMatch[1];
-                        console.log(`[Performer Rater] Waist-hips pattern found, preserving: "${waistHipsMatch[1]}"`);
+                        // console.log(`[Performer Rater] Waist-hips pattern found, preserving: "${waistHipsMatch[1]}"`);
                     } else {
                         // Simple format or new measurement
                         newValue = this.selectedSize + this.selectedCup;
-                        console.log(`[Performer Rater] No waist-hips found, using simple format`);
+                        // console.log(`[Performer Rater] No waist-hips found, using simple format`);
                     }
                 }
             }
             
-            console.log(`[Performer Rater] Setting new value: "${newValue}"`);
+            // console.log(`[Performer Rater] Setting new value: "${newValue}"`);
             measurementsInput.value = newValue;
             
             // Clear flag after a longer delay to ensure event processing is complete
@@ -1188,14 +1183,14 @@ class PerformerRater {
     handleMeasurementsInput() {
         // Don't interfere if we're updating from buttons
         if (this.updatingFromButtons) {
-            console.log(`[Performer Rater] handleMeasurementsInput blocked - updatingFromButtons=true`);
+            // console.log(`[Performer Rater] handleMeasurementsInput blocked - updatingFromButtons=true`);
             return;
         }
         
         const measurementsInput = document.getElementById('measurements-input');
         const value = measurementsInput.value.trim();
         
-        console.log(`[Performer Rater] handleMeasurementsInput called with value: "${value}"`);
+        // console.log(`[Performer Rater] handleMeasurementsInput called with value: "${value}"`);
         
         if (!value) {
             // Empty input, re-enable buttons and set default
@@ -1210,7 +1205,7 @@ class PerformerRater {
         if (bustMatch) {
             // Value matches button format - enable buttons and set selections
             const [, size, cup] = bustMatch;
-            console.log(`[Performer Rater] Input parsed - size: "${size}", cup: "${cup}"`);
+            // console.log(`[Performer Rater] Input parsed - size: "${size}", cup: "${cup}"`);
             this.selectedSize = size;
             this.selectedCup = cup;
             
@@ -1220,7 +1215,7 @@ class PerformerRater {
             this.updateCupButtons();
         } else {
             // Value doesn't match button format - disable buttons
-            console.log(`[Performer Rater] Input doesn't match button format, disabling buttons`);
+            // console.log(`[Performer Rater] Input doesn't match button format, disabling buttons`);
             this.disableMeasurementButtons();
             this.selectedSize = null;
             this.selectedCup = null;
@@ -1334,7 +1329,7 @@ class PerformerRater {
             const performerId = this.performers[this.currentIndex].id;
             const performerUrl = `/performers/${performerId}`;
             window.open(performerUrl, '_blank');
-            console.log(`[Performer Rater] Opened performer page for ${this.performers[this.currentIndex].name}`);
+            // console.log(`[Performer Rater] Opened performer page for ${this.performers[this.currentIndex].name}`);
         }
     }
 
@@ -1368,7 +1363,7 @@ class PerformerRater {
         };
         
         performerImage.onload = () => {
-            console.log(`[Performer Rater] Successfully loaded and saved image: ${imageUrl}`);
+            // console.log(`[Performer Rater] Successfully loaded and saved image: ${imageUrl}`);
             // Store the new URL and save only after successful load
             if (this.performers[this.currentIndex]) {
                 this.performers[this.currentIndex].customImageUrl = imageUrl;
@@ -1381,7 +1376,7 @@ class PerformerRater {
         performerImage.src = imageUrl;
         
         // Don't automatically hide the URL input - user can manually close if needed
-        console.log(`[Performer Rater] Attempting to load image: ${imageUrl}`);
+        // console.log(`[Performer Rater] Attempting to load image: ${imageUrl}`);
     }
 
     updateImageFromInput() {
@@ -1401,7 +1396,7 @@ class PerformerRater {
                 const testImage = new Image();
                 
                 testImage.onerror = () => {
-                    console.log(`[Performer Rater] Failed to load image: ${imageUrl}`);
+                    // console.log(`[Performer Rater] Failed to load image: ${imageUrl}`);
                     // Try to reload the original image if custom fails
                     if (this.performers[this.currentIndex] && this.performers[this.currentIndex].imageUrl) {
                         performerImage.src = this.performers[this.currentIndex].imageUrl;
@@ -1409,12 +1404,12 @@ class PerformerRater {
                 };
                 
                 testImage.onload = () => {
-                    console.log(`[Performer Rater] Successfully loaded image: ${imageUrl}`);
+                    // console.log(`[Performer Rater] Successfully loaded image: ${imageUrl}`);
                     // Store for potential saving only after successful load
                     if (this.performers[this.currentIndex] && !this.performers[this.currentIndex].savingImage) {
                         const currentPerformerId = this.performers[this.currentIndex].id;
                         const currentPerformerName = this.performers[this.currentIndex].name;
-                        console.log(`[Performer Rater] Auto-saving image for performer ${currentPerformerId} (${currentPerformerName}) at index ${this.currentIndex}`);
+                        // console.log(`[Performer Rater] Auto-saving image for performer ${currentPerformerId} (${currentPerformerName}) at index ${this.currentIndex}`);
                         
                         // Prevent multiple saves
                         this.performers[this.currentIndex].savingImage = true;
@@ -1434,7 +1429,7 @@ class PerformerRater {
                 testImage.src = imageUrl;
                 
             } catch (e) {
-                console.log(`[Performer Rater] Invalid URL format: ${imageUrl}`);
+                // console.log(`[Performer Rater] Invalid URL format: ${imageUrl}`);
                 // Invalid URL, just ignore
             }
         }
@@ -1459,7 +1454,7 @@ class PerformerRater {
 
     async uploadImageToStash(imageUrl) {
         try {
-            console.log(`[Performer Rater] Uploading image from URL: ${imageUrl}`);
+            // console.log(`[Performer Rater] Uploading image from URL: ${imageUrl}`);
             
             // Use Stash's built-in URL import functionality via GraphQL
             // This bypasses CSP issues by letting Stash's backend download the image
@@ -1472,7 +1467,7 @@ class PerformerRater {
                 }
             `;
 
-            console.log(`[Performer Rater] Attempting to use Stash's downloadPerformerImage...`);
+            // console.log(`[Performer Rater] Attempting to use Stash's downloadPerformerImage...`);
             let response = await fetch('/graphql', {
                 method: 'POST',
                 headers: {
@@ -1486,12 +1481,12 @@ class PerformerRater {
             if (response.ok) {
                 const result = await response.json();
                 if (!result.errors && result.data?.downloadPerformerImage) {
-                    console.log(`[Performer Rater] Stash downloadPerformerImage successful:`, result.data);
+                    // console.log(`[Performer Rater] Stash downloadPerformerImage successful:`, result.data);
                     return result.data.downloadPerformerImage.id;
                 }
             }
 
-            console.log(`[Performer Rater] downloadPerformerImage not available, trying alternative approach...`);
+            // console.log(`[Performer Rater] downloadPerformerImage not available, trying alternative approach...`);
             
             // Alternative: Use a canvas-based approach to convert the image
             return await this.uploadImageViaCanvas(imageUrl);
@@ -1504,7 +1499,7 @@ class PerformerRater {
 
     async uploadImageViaCanvas(imageUrl) {
         try {
-            console.log(`[Performer Rater] Trying canvas-based approach for: ${imageUrl}`);
+            // console.log(`[Performer Rater] Trying canvas-based approach for: ${imageUrl}`);
             
             return new Promise((resolve, reject) => {
                 const img = new Image();
@@ -1529,7 +1524,7 @@ class PerformerRater {
                                     throw new Error('Failed to create blob from canvas');
                                 }
                                 
-                                console.log(`[Performer Rater] Created blob from canvas, size: ${blob.size} bytes`);
+                                // console.log(`[Performer Rater] Created blob from canvas, size: ${blob.size} bytes`);
                                 
                                 // Create FormData for upload
                                 const formData = new FormData();
@@ -1582,10 +1577,10 @@ class PerformerRater {
 
     async savePerformerImage(performerId, imageUrl) {
         try {
-            console.log(`[Performer Rater] Saving image for performer ${performerId}: ${imageUrl}`);
+            // console.log(`[Performer Rater] Saving image for performer ${performerId}: ${imageUrl}`);
             
             // Use the direct image field approach (confirmed working)
-            console.log(`[Performer Rater] Setting image field directly...`);
+            // console.log(`[Performer Rater] Setting image field directly...`);
             const mutation = `
                 mutation PerformerUpdate($input: PerformerUpdateInput!) {
                     performerUpdate(input: $input) {
@@ -1615,14 +1610,14 @@ class PerformerRater {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log(`[Performer Rater] Image update response:`, result);
+                // console.log(`[Performer Rater] Image update response:`, result);
                 
                 if (!result.errors) {
                     // Store in memory for immediate use
                     if (this.performers[this.currentIndex]) {
                         this.performers[this.currentIndex].customImageUrl = imageUrl;
                     }
-                    console.log(`[Performer Rater] Successfully saved image URL for performer ${performerId}`);
+                    // console.log(`[Performer Rater] Successfully saved image URL for performer ${performerId}`);
                     return result.data;
                 } else {
                     throw new Error(`GraphQL errors: ${result.errors[0]?.message}`);
@@ -1634,7 +1629,7 @@ class PerformerRater {
             
         } catch (error) {
             console.error('[Performer Rater] Error saving performer image:', error);
-            console.log('[Performer Rater] Image URL will be stored in memory for this session only');
+            // console.log('[Performer Rater] Image URL will be stored in memory for this session only');
         }
     }
 
@@ -1663,7 +1658,7 @@ class PerformerRater {
             el.classList.remove('rating-current');
         });
         
-        console.log('[Performer Rater] Rating session ended');
+        // console.log('[Performer Rater] Rating session ended');
         
         // Force page reload to refresh images and clear cache
         window.location.reload();
@@ -1673,4 +1668,4 @@ class PerformerRater {
 // Initialize when script loads
 window.performerRater = new PerformerRater();
 
-console.log('[Performer Rater] Plugin loaded successfully');
+console.log('[Performer Rater] Plugin loaded');
